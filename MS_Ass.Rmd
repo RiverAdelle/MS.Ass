@@ -3,7 +3,7 @@ title: <center><h1>Model Selection Assignment</h1></center>
 author: 
   <center>River A. Watson</center>
 output: rmdformats::downcute
-   
+
 ---
 
 ```{r setup, include=FALSE}
@@ -27,10 +27,11 @@ library(patchwork)
 
 We're gonna look at what influences the genetic fixation/isolation in Kentucky Arrow Darter populations
 
-
-```{r pairs}
-pairs(KADdata[,3:6], lower.panel = NULL)
+```{r}
+KADdata
 ```
+
+<li>Any correlation? </li>
 ```{r ggpair}
 ggpairs(KADdata, columns = 3:6) + theme_bw()
 ```
@@ -38,52 +39,70 @@ ggpairs(KADdata, columns = 3:6) + theme_bw()
 
 ```{r look 4 VIF}
 model_kad <- lm(pFst ~ sCulvert + Condb + pForest + distmi, data=KADdata)
-anova (model_kad) #coefficients of the full model
+anova (model_kad) 
 
 ```
+No significant variables, good start
 
 
+<li> Check for multicollinearity </li>
 ```{r colinear??}
 performance::check_collinearity(model_kad)
 ```
-Apparently, percent forest cover and river distance between sites are not important to keep
 
-```{r dredging is bad}
+Apparently, percent forest cover and river distance between sites are not important to keep. They data they provide to the model is already accurately predicted by the other variables.
+
+
+<br>
+<li> Dredging is bad, but all of these variables have a reason for being biologically significant </li>
+
+
+```{r dredging is bad, message=FALSE, error=FALSE}
 options(na.action = 'na.fail')
 dredge_kad <- dredge(model_kad)
 dredge_kad
 ```
 
 16 whole models
+
+
 ```{r subset the dredge}
 subset(dredge_kad, delta <5)
 ```
-Down to 5 models
+Down to 5 models with a delta value less than 5
+
 
 ```{r subset some more}
 subset(dredge_kad, delta <2)
 ```
-Wow just one, none are considered equally competitive
+Just one with a delta less than two, none are considered equally competitive
 
 ```{r importance dredge}
 importance(dredge_kad)
 ```
-None of them really have any importance, no weights are close to 1
+All variables appear in half of the provide models. None of them really have any importance, no weights are close to 1
+
+
+<li> Model averaging based on weights in all 16 models</li>
 
 ```{r average models}
 model.avg(dredge_kad, revised.var = TRUE)
 ```
+All variables have little overall effect
+
+<li> Looking only at competitive models, with a delta less than three</li>
 ```{r just comp models}
 summary(model.avg(dredge_kad, subset = delta < 3))
 ```
-Narrowed down to competitive models, but looking at delta less than three because only one is less than 2
+
+Models with a delta less than three only take culvert score into account
 
 
-```{r plot time, fig.width=4, fig.height=10}
+
+```{r plot time, fig.width=4, fig.height=10, message=FALSE, warning=FALSE}
 k1 <- ggplot(KADdata, aes(sCulvert, pFst)) + 
   geom_point() +
   geom_smooth(method="lm")
-  #scale_x_continuous(limits = c(0, 700))
 
 k2 <- ggplot(KADdata, aes(Condb, pFst)) + 
   geom_point() +
@@ -101,7 +120,7 @@ k4 <- ggplot(KADdata, aes(distmi, pFst)) +
 k1 / k2 / k3 / k4
 ```
 
-
+<br>
 ## Example 2
 
 
@@ -131,16 +150,20 @@ First we must acknowledge my favorite locality information:
 ![](images\Capture5.png)
 
 
-
-```{r read, echo=FALSE}
+```{r datta}
 data <- read.csv('data/WeyData.csv')
+data[,6:7] <- round(data[,6:7],3)
+data[,3:8]
 ```
 
+
+<li> Any correlations?</li>
 ```{r pairs pairs}
-pairs(data[,5:8], lower.panel = NULL)
+ggpairs(data[,5:8], lower.panel = NULL)
 ```
+Nope
 
-
+<li> Make some models </li>
 ```{r lmodels}
 options(na.action = "na.fail")
 mod1<-lm(Abundance~Water_Dept+Velocity, data = data)
@@ -149,19 +172,23 @@ mod3<-lm(Abundance~Velocity+Pool_Depth, data = data)
 mod4<-lm(Abundance~Height+Velocity+Water_Dept, data = data)
 mod5<-lm(Abundance~Height+Velocity+Water_Dept+Pool_Depth, data = data)
 ```
+4 variables, 5 models
 
 
+<li> Compare models AICcs</li>
 ```{r modsel}
 out.put<-model.sel(mod1,mod2,mod3,mod4,mod5)
 out.put
 ```
+Model3, using Velocity and Pool depth is most likely the best explanation for differences in fish abundance at barriers, but model 1 and 2 are very close behind it.
+All delta values are less than 5.
 
-
+<li>Cut down the list using cumulitive weight criteria</li>
 ```{r subsetting subsets?}
 subset(out.put, cumsum(out.put$weight) <= .95)
 ```
 
-
+<li>Make the table prettier</li>
 ```{r output table}
 sel.table<-as.data.frame(out.put)[7:11]
 names(sel.table)[1] = "K"
@@ -171,30 +198,26 @@ sel.table[,4:5]<- round(sel.table[,4:5],3)
 sel.table
 ```
 
-
+<li>model averaging</li>
 ```{r model averaging}
-
+MA.ests<-model.avg(out.put, revised.var = TRUE)
+MA.ests
 ```
 
 
-```{r}
+```{r important plots}
+p1 <- ggplot(data, aes(Velocity, Abundance, colour = Velocity)) + 
+  geom_point() +
+  geom_smooth(method="lm")+
+  scale_x_continuous(limits = c(0, 5))
 
+p2 <- ggplot(data, aes(Pool_Depth, Abundance, colour = Pool_Depth)) + 
+  geom_point() +
+  geom_smooth(method="lm") +
+  scale_colour_gradientn(colours = terrain.colors(10, rev=TRUE)) +
+  scale_x_continuous(limits = c(0, 5))                         
+
+p1+p2
 ```
-
-
-```{r}
-
-```
-
-
-```{r}
-
-```
-
-
-```{r}
-
-```
-
 
 
