@@ -1,0 +1,200 @@
+---
+title: <center><h1>Model Selection Assignment</h1></center>
+author: 
+  <center>River A. Watson</center>
+output: rmdformats::downcute
+   
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+KADdata <- read.csv('data/MadeUpKAD.csv')
+library(rmdformats)
+library(ggplot2)
+library(dplyr)
+library(lme4)
+library(lmerTest)
+library(ggfortify)
+library(MuMIn)
+library(asbio)
+library(GGally)
+library(performance)
+library(patchwork)
+```
+
+##  Example 1
+
+
+We're gonna look at what influences the genetic fixation/isolation in Kentucky Arrow Darter populations
+
+
+```{r pairs}
+pairs(KADdata[,3:6], lower.panel = NULL)
+```
+```{r ggpair}
+ggpairs(KADdata, columns = 3:6) + theme_bw()
+```
+
+
+```{r look 4 VIF}
+model_kad <- lm(pFst ~ sCulvert + Condb + pForest + distmi, data=KADdata)
+anova (model_kad) #coefficients of the full model
+
+```
+
+
+```{r colinear??}
+performance::check_collinearity(model_kad)
+```
+Apparently, percent forest cover and river distance between sites are not important to keep
+
+```{r dredging is bad}
+options(na.action = 'na.fail')
+dredge_kad <- dredge(model_kad)
+dredge_kad
+```
+
+16 whole models
+```{r subset the dredge}
+subset(dredge_kad, delta <5)
+```
+Down to 5 models
+
+```{r subset some more}
+subset(dredge_kad, delta <2)
+```
+Wow just one, none are considered equally competitive
+
+```{r importance dredge}
+importance(dredge_kad)
+```
+None of them really have any importance, no weights are close to 1
+
+```{r average models}
+model.avg(dredge_kad, revised.var = TRUE)
+```
+```{r just comp models}
+summary(model.avg(dredge_kad, subset = delta < 3))
+```
+Narrowed down to competitive models, but looking at delta less than three because only one is less than 2
+
+
+```{r plot time, fig.width=4, fig.height=10}
+k1 <- ggplot(KADdata, aes(sCulvert, pFst)) + 
+  geom_point() +
+  geom_smooth(method="lm")
+  #scale_x_continuous(limits = c(0, 700))
+
+k2 <- ggplot(KADdata, aes(Condb, pFst)) + 
+  geom_point() +
+  geom_smooth(method="lm")
+
+k3 <- ggplot(KADdata, aes(pForest, pFst)) + 
+  geom_point() +
+  geom_smooth(method="lm")
+
+k4 <- ggplot(KADdata, aes(distmi, pFst)) + 
+  geom_point() +
+  geom_smooth(method="lm")
+
+
+k1 / k2 / k3 / k4
+```
+
+
+## Example 2
+
+
+Data about fish abundance and culverts
+```{r data, echo=FALSE}
+
+```
+
+First we must acknowledge my favorite locality information:
+
+
+![](images\Capture1.png)
+
+
+![](images\Capture2.png)
+
+
+![](images\Capture3.png)
+
+
+![](images\Capture4.png)
+
+
+![](images\Capture6.png)
+
+
+![](images\Capture5.png)
+
+
+
+```{r read, echo=FALSE}
+data <- read.csv('data/WeyData.csv')
+```
+
+```{r pairs pairs}
+pairs(data[,5:8], lower.panel = NULL)
+```
+
+
+```{r lmodels}
+options(na.action = "na.fail")
+mod1<-lm(Abundance~Water_Dept+Velocity, data = data)
+mod2<-lm(Abundance~Water_Dept+Pool_Depth, data = data)
+mod3<-lm(Abundance~Velocity+Pool_Depth, data = data)
+mod4<-lm(Abundance~Height+Velocity+Water_Dept, data = data)
+mod5<-lm(Abundance~Height+Velocity+Water_Dept+Pool_Depth, data = data)
+```
+
+
+```{r modsel}
+out.put<-model.sel(mod1,mod2,mod3,mod4,mod5)
+out.put
+```
+
+
+```{r subsetting subsets?}
+subset(out.put, cumsum(out.put$weight) <= .95)
+```
+
+
+```{r output table}
+sel.table<-as.data.frame(out.put)[7:11]
+names(sel.table)[1] = "K"
+
+sel.table[,2:3]<- round(sel.table[,2:3],2)
+sel.table[,4:5]<- round(sel.table[,4:5],3)
+sel.table
+```
+
+
+```{r model averaging}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+

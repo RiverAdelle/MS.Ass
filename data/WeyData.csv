@@ -1,0 +1,40 @@
+SiteID,SiteName,Abundance,Type,Height,Velocity,Water_Dept,Pool_Depth
+5640,Broadmead Loop,73,Weir,1.58,0.65,0.45,1.42
+10363,Byfleet at Brooklands,151,Sluice,1.6,0.1,0.1,0.3
+32827,Cobbett Hill Road,6,Culvert,0.56,0.5,0.45,1.2
+5644,Cox Bridge,47,Vertical & sloping weir,1.5,2,0.2335,0.7
+10686,D/S Farnham STW,72,Sluice,2.74,0.2,0.66,1.28
+10379,D/S Lightwater STW,8,Weir,0.86,1,1,1.21
+10364,Dockenfield,85,Vertical weir,0.3,1.5,0.45,0.95
+5641,Eashing Bridge,31,Notch weir,1.5,1.3,0.5,1
+32821,Elstead Road,3,Stepped weir,1.3,1.2,0.89,1.58
+21222,Emmetts,57,Bridge,0.1,0.2,0.59,3
+32815,Guileshill Road,0,Culvert,2,0.16,0.256,0.56
+12025,Hatch Farm,241,Ford,0,0.15,0.35,0.65
+5340,Headley Wood Farm,54,Weir,0.55,0.661,0.43,0.99
+32830,Hollandia,0,Weir,0.84,1.2,0.3,0.67
+11870,Liphook,81,Culvert,0.56,0.33,0.25,0.46
+32825,Lovelands Lane,0,Ford,0.05,0.128667,0.071333,0.3
+8941,Lower Headley Wood Farm,49,Mill,0,0.2,1.2,2.3
+10380,Lyne Road Bridge,158,Culvert,0.5,0.89,0.35,0.65
+37866,Mayford Meadows,141,Weir,1,1.1,0.45,1.56
+8133,"Mill lane, Alton",25,Sluice,3,0.1,0.56,1.45
+5639,Millmead Loop,62,Vertical weir,1,2.03,0.12,0.2
+21222,Mitizens Farm,137,Bridge,0.1,0.43,0.59,4
+10389,Newark Priory,96,Weir,2.51,0.95,5,1.5
+37866,Old Woking Cricket Club,124,Weir,1,1,0.5,1
+11870,Radford Park,69,Culvert,0.78,0.4,1,1.78
+32817,Rake Lane,14,Stepped weir,1.5,0.333,0.05,2.72
+32819,Royal Oak,4,Stepped weir,1.2,0.6,0.05,1.44
+10381,Run Common,242,Sloping weir,0.8,0.95,0.3,0.6
+12679,Shalford,40,Vertical weir,0.6,3,1.5,3
+13733,Sheephatch,75,Weir,0.17,3,0.34,0.55
+5645,Snayles Lynch,32,Culvert,1.23,0.56,0.4,0.65
+29008,U/S Weybridge Lock,0,Stepped weir,5,2.3,1.89,2.3
+29008,Unstead Loop,39,Sluice,3,0.1,1.5,3
+7114,Upstream Froyle Mill,10,Vertical weir,0.76,1.23,0.2,0.41
+5642,Walsham Loop,272,Stepped weir,1.5,2.5,0.05,1
+32823,West Brook Lane,16,Vertical weir,0.2,1.03,0.12,1
+37866,Woking Leisure Centre,99,Weir,2,5,2.56,3.23
+12661,Wonham Way,96,Culvert,0.99,0.15,0.23,1.56
+32828,Wotton,48,Vertical weir,0.42,1.46,0.11,0.19
